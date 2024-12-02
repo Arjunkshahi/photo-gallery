@@ -1,39 +1,45 @@
-import { useEffect, useState } from "react";
-import type { Schema } from "../amplify/data/resource";
-import { generateClient } from "aws-amplify/data";
-
-const client = generateClient<Schema>();
+import { useState } from "react";
+import Lightbox from "yet-another-react-lightbox";
+import { slides } from "./data";
+import "yet-another-react-lightbox/styles.css";
+import {
+  Captions,
+  Download,
+  Fullscreen,
+  Thumbnails,
+} from "yet-another-react-lightbox/plugins";
+import "yet-another-react-lightbox/plugins/captions.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
+import Images from "./Images";
 
 function App() {
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
-
-  useEffect(() => {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-    });
-  }, []);
-
-  function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
-  }
+  // const [open, setOpen] = useState<boolean>(false);
+  const [index, setIndex] = useState<number>(-1);
 
   return (
-    <main>
-      <h1>My todos</h1>
-      <button onClick={createTodo}>+ new</button>
-      <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>{todo.content}</li>
-        ))}
-      </ul>
-      <div>
-        🥳 App successfully hosted. Try creating a new todo.
-        <br />
-        <a href="https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates">
-          Review next step of this tutorial.
-        </a>
-      </div>
-    </main>
+    <>
+      {/* <button onClick={() => setOpen(true)}>Open Lightbox</button>  */}
+
+      <Images
+        data={slides}
+        onClick={(currentIndex) => setIndex(currentIndex)}
+      />
+
+      <Lightbox
+        plugins={[Captions, Download, Fullscreen, Thumbnails]}
+        captions={{
+          showToggle: true,
+          descriptionTextAlign: "start",
+        }}
+        // open={open}
+        // close={() => setOpen(false)}
+
+        index={index}
+        open={index >= 0}
+        close={() => setIndex(-1)}
+        slides={slides}
+      />
+    </>
   );
 }
 
