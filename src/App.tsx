@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 import Lightbox from "yet-another-react-lightbox";
 import { slides } from "./data";
 import "yet-another-react-lightbox/styles.css";
@@ -15,6 +16,7 @@ import Images from "./Images";
 function App() {
   // const [open, setOpen] = useState<boolean>(false);
   const [index, setIndex] = useState<number>(-1);
+  const { signOut } = useAuthenticator();
 
   return (
     <>
@@ -39,6 +41,7 @@ function App() {
         close={() => setIndex(-1)}
         slides={slides}
       />
+      <button onClick={signOut}>Sign out</button>
     </>
   );
 }
